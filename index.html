@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			background-color: rgba(0, 0, 128, 14%);
+		}
+		#playerturn {
+			font-size: 20px;
+			margin: 20px 5px;
+			font-weight: bold;
+		}
+		#xox {
+			display: grid;
+			/*grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;*/
+			grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+			padding: 10px;
+			background-color: rgb(0,0,128);
+			width:  500px;
+			height: 500px;
+		}
+		.box {
+			background-color: white;
+			border: 2px solid black;
+			padding: 25px;
+			text-align: center;
+			/*font-size: 100px;*/
+			font-size: 89px;
+		}
+		#playerwin {
+			margin: 10px;
+			font-size: 50px;
+			font-weight: bold;
+			color: white;
+			background-color: rgb(0,0,128,128);
+			text-align: center;
+			width: 500px;
+		}
+		#restart {
+			color:  white;
+			background-color: rgb(0, 0, 128);
+			border: 1px solid white;
+			border-radius: 10px;
+			width: 170px;
+			font-size: 20px;
+			padding: 10px;
+			margin: 0 170px;
+		}
+	</style>
+	<title>XOX</title>
+</head>
+<body>
+	<div id="playerturn">Player's turn: <span id="player">X</span></div>
+	<div id="xox">
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+	</div>
+	<div id="playerwin"></div>
+	<button id="restart" onclick=restart()>RESTART</button>
+</body>
+<script>
+	BOX = document.getElementsByClassName("box")
+	PLAYER = document.getElementById('player')
+	PLAYERWIN = document.getElementById("playerwin")
+	win = false
+	i = 0
+	total = 0
+	for (box of BOX) {
+		box.id = i
+		box.addEventListener("click", function() {
+			// if (this.innerHTML == ""){
+			if (this.innerHTML == "" && !win){
+				this.innerHTML = PLAYER.innerHTML
+				if (!checkWin(this.id)) {
+					PLAYER.innerHTML = PLAYER.innerHTML == "X" ? "O" : "X"
+					total++
+				}
+				// checkWin(this.id)
+			}
+			if (checkWin(this.id)) {
+				document.getElementById("playerwin").innerHTML = `player ${PLAYER.innerHTML} win`
+			}
+			if (total>8) {
+				PLAYERWIN.innerHTML = "DRAW"
+			}
+		});
+		i++;
+	}
+	function checkWin(n){
+		let x = n%3;
+		let y = Math.floor(n/3); 
+		/*if (text(y*3+0) == text(y*3+1) == text(y*3+2) || text(0*3+x) == text(1*3+x) == text(2*3+x)) {
+			win = true;
+		}
+		if (n%2 == 1 && text(n) == text(8/2) == text(8-n)){
+			win = true;
+		}*/
+		if ((text(y*3+0)+text(y*3+1)+text(y*3+2)).split(text(n)).length-1 == 3 || (text(0*3+x)+text(1*3+x)+text(2*3+x)).split(text(n)).length-1 == 3) {
+			win = true;
+			return true
+		}
+		/*if (n%2 == 1 && text(n)+text(8/2)+text(8-n) == 3){
+			win = true;
+			return true
+		}*/
+		if (n==8/2) {
+			if ((text(0)+text(n)+text(8)).split(text(n)).length-1 == 3 || (text(2)+text(n)+text(6)).split(text(n)).length-1 == 3){
+				win = true;
+				return true;
+			}
+		}
+		else if (n%2 == 0 && (text(n)+text(8/2)+text(8-n)).split(text(n)).length-1 == 3){
+			win = true;
+			return true
+		}
+		// console.log(win)
+	}
+	function text(id) {
+		return document.getElementById(`${id}`).innerHTML
+	}
+	function restart() {
+		for (box of BOX) {
+			box.innerHTML = ""
+		}
+		PLAYER.innerHTML = "X";
+		win = false;
+		i=0;
+		PLAYERWIN.innerHTML = "";
+	}
+</script>
+</html>
